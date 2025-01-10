@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='attendance.css') }}">
+    <title>Employee Attendance</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Add updated CSS here */
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Employee Attendance</h1>
+    </header>
+    <div class="container">
+        <form id="attendanceForm" method="POST" action="/attendance">
+            <div class="form-group">
+                <input type="text" id="employeeName" name="employeeName" placeholder="Employee Name" required>
+            </div>
+            <div class="form-group">
+                <input type="number" id="employeeId" name="employeeId" placeholder="Employee ID" required>
+            </div>
+            <div class="form-group">
+                <input type="date" id="startDate" name="startDate" required>
+            </div>
+            <div class="form-group">
+                <input type="date" id="endDate" name="endDate" required>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+
+        <table id="attendanceTable" style="display:none;">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Employee Id</th>
+                    <th>Employee Name</th>
+                    <th>Working Hours</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <script>
+        document.getElementById('attendanceForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const employeeName = document.getElementById('employeeName').value.trim();
+            const employeeId = document.getElementById('employeeId').value.trim();
+            const startDate = document.getElementById('startDate').value.trim();
+            const endDate = document.getElementById('endDate').value.trim();
+
+            if (!employeeName || !employeeId || !startDate || !endDate) {
+                alert('Please fill all fields.');
+                return;
+            }
+
+            const formData = new FormData(this);
+            fetch(this.action, {
+                method: this.method,
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.querySelector('#attendanceTable tbody');
+                tableBody.innerHTML = ''; // Clear old data
+
+                if (data.length === 0) {
+                    const tr = document.createElement('tr');
+                    const td = document.createElement('td');
+                    td.colSpan = 4;
+                    td.textContent = 'No records found.';
+                    tr.appendChild(td);
+                    tableBody.appendChild(tr);
+                } else {
+                    data.forEach(row => {
+                        const tr = document.createElement('tr');
+                        Object.values(row).forEach(value => {
+                            const td = document.createElement('td');
+                            td.textContent = value;
+                            tr.appendChild(td);
+                        });
+                        tableBody.appendChild(tr);
+                    });
+                }
+
+                document.getElementById('attendanceTable').style.display = 'table';
+            })
+            .catch(error => console.error('Error fetching attendance data:', error));
+        });
+    </script>
+</body>
+</html>

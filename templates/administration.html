@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration Page</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='administration.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Administration Dashboard</h1>
+        </header>
+        <nav>
+            <ul>
+                <li><a href="/form">Register New User</a></li>
+                <li><a href="/attendance">Generate Attendance Report</a></li>
+                <li><a href="/facial_recognition">Punch Attendance</a></li>
+            </ul>
+        </nav>
+    </div>
+</body>
+</html>

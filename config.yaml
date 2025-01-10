@@ -1,0 +1,17 @@
+
+influxdb:
+  token: 'Uxh3_M9yNWhCE-Ne9xeMYV_I0-sGXBBF3KELMTLDT8UUmcT__jUxAPVmzKmF-DC58dJvsBFovQwtYxrT5hOWeg=='
+  org: 'IIIOT-INFOTECH'
+  bucket: 'POC'
+  url: 'http://192.168.1.130:8086/'
+
+
+messages:
+  object_count_update_success: "Updating count and confidence for camera: {camera_name}, class: {class_name}, count: {count}, confidence: {confidence}"
+  object_count_update_error: "Error updating object count: {error}"
+  email_sent_success: "Email sent successfully!"
+  email_sent_failure: "Failed to send email. Status code: {status_code}\n{response_text}"
+  email_send_error: "Email could not be sent. Error: {error}"
+  draw_line: "Error reading frame from camera: {camera_index+1}"
+  skip_line: "Error reading frame from camera: {camera_index+1}"
+  influxdb: "Data written to InfluxDB successfully!"

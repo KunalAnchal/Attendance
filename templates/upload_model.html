@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Model</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Upload Model</h1>
+    <form id="modelForm" enctype="multipart/form-data">
+        <label for="modelFile">Choose Model File:</label>
+        <input type="file" id="modelFile" name="model_file" accept=".pt" required>
+        <button type="submit">Upload Model</button>
+    </form>
+    <a href="/">Back to Home</a>
+    <script>
+        document.getElementById('modelForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            const fileInput = document.getElementById('modelFile');
+            formData.append('model_file', fileInput.files[0]);
+
+            const response = await fetch('/upload_model', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok) {
+                alert('Model uploaded successfully!');
+            } else {
+                const errorData = await response.json();
+                alert(`Error: ${errorData.message}`);
+            }
+        });
+    </script>
+</body>
+</html>

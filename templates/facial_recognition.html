@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facial Recognition</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='facial_recognition.css') }}">
+</head>
+<body>
+    <h1>Facial Recognition</h1>
+    <form method="POST" action="#" onsubmit="startRecognition(event)">
+        <label for="custom_message">Custom Greeting Message:</label>
+        <input type="text" id="custom_message" name="custom_message" required>
+
+        <label for="language">Language:</label>
+        <select id="language" name="language" required>
+            <option value="english">English</option>
+            <option value="arabic">Arabic</option>
+        </select>
+
+        <button type="submit" id="start_button">Start Recognition</button>
+        <button type="button" id="stop_button" style="display:none;" onclick="stopRecognition()">Stop Recognition</button>
+    </form>
+
+    <h2>Video Feed:</h2>
+    <div class="video-container">
+        <img id="video_feed" alt="Video feed" style="display: none;">
+    </div>
+
+    <script>
+        let videoFeedUrl = '';
+        let videoElement = document.getElementById('video_feed');
+        let startButton = document.getElementById('start_button');
+        let stopButton = document.getElementById('stop_button');
+
+        function startRecognition(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Get form values
+            const customMessage = document.getElementById('custom_message').value;
+            const language = document.getElementById('language').value;
+
+            // Construct the video feed URL with query parameters
+            videoFeedUrl = `/video_feed?custom_message=${encodeURIComponent(customMessage)}&language=${encodeURIComponent(language)}`;
+
+            // Set the video feed URL dynamically
+            videoElement.src = videoFeedUrl;
+            videoElement.style.display = 'block'; // Show the video feed
+
+            // Hide start button and show stop button
+            startButton.style.display = 'none';
+            stopButton.style.display = 'inline-block';
+        }
+
+        function stopRecognition() {
+            // Stop the video feed by stopping the video element source
+            videoElement.src = '';
+            videoElement.style.display = 'none';
+
+            // Show the start button and hide the stop button
+            startButton.style.display = 'inline-block';
+            stopButton.style.display = 'none';
+        }
+    </script>
+</body>
+</html>

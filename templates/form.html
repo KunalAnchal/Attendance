@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='form.css') }}">
+    <title>Employee Registration Form</title>
+</head>
+<body>
+<div class="container mt-5">
+    <h2>Employee Registration Form</h2>
+    <form id="employeeForm" action="/submit" method="POST" enctype="multipart/form-data">
+        <!-- Employee Details -->
+        <div class="form-group">
+            <label for="company_name">Company Name</label>
+            <input type="text" class="form-control" id="company_name" name="company_name">
+        </div>
+
+        <div class="form-group">
+            <label for="employee_id">Employee ID</label>
+            <input type="text" class="form-control" id="employee_id" name="employee_id" required>
+        </div>
+
+        <div class="form-group">
+            <label for="employee_name">Employee Name</label>
+            <input type="text" class="form-control" id="employee_name" name="employee_name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="department">Department</label>
+            <input type="text" class="form-control" id="department" name="department">
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="date_of_birth">Date of Birth</label>
+            <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" required>
+        </div>
+
+        <div class="form-group">
+            <label for="joining_date">joining_date</label>
+            <input type="date" class="form-control" id="joining_date" name="joining_date" required>
+        </div>
+
+        <div class="form-group">
+            <label for="marital_status">Marital Status</label>
+            <select class="form-control" id="marital_status" name="marital_status">
+                <option value="Single">Single</option>
+                <option value="Married">Married</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="country">Country</label>
+            <input type="text" class="form-control" id="country" name="country">
+        </div>
+
+        <div class="form-group">
+            <label for="designation">Designation</label>
+            <input type="text" class="form-control" id="designation" name="designation">
+        </div>
+
+        <div class="form-group">
+            <label for="marriage_anniversary">Marriage Anniversary</label>
+            <input type="text" class="form-control" id="marriage_anniversary" name="marriage_anniversary">
+        </div>
+
+        <div class="form-group">
+            <label for="preferred_language">Preferred Language</label>
+            <input type="text" class="form-control" id="preferred_language" name="preferred_language">
+        </div>
+
+        <div class="form-group">
+            <label for="shift">Shift</label>
+            <input type="text" class="form-control" id="shift" name="shift">
+        </div>
+
+        <div class="form-group">
+            <label for="manager_name">Manager Name</label>
+            <input type="text" class="form-control" id="manager_name" name="manager_name">
+        </div>
+
+
+        <div class="form-group">
+            <label for="gender">Gender</label>
+            <select class="form-control" id="gender" name="gender" required>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+
+        <!-- Camera Section -->
+        <div class="form-group">
+    <label>Face Snapshot <span class="text-danger">*</span></label>
+    <div id="video-container" class="mb-3">
+        <img id="cameraFeed" src="/video_feed1" alt="Video Stream" width="640" height="480">
+        <br>
+        <button type="button" id="captureBtn" class="btn btn-primary">Capture Photo</button>
+        <input type="hidden" id="capturedImage" name="face_snapshot">
+        <img id="capturedImagePreview" alt="Captured Snapshot" style="display: none; margin-top: 10px; border: 1px solid #ddd; border-radius: 4px; max-width: 100%;">
+    </div>
+</div>
+
+
+        <!-- File Upload Section -->
+        <div class="form-group">
+            <label for="upload_snapshot">Upload Snapshot</label>
+            <input type="file" class="form-control" id="upload_snapshot" name="upload_snapshot" accept="image/*">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    const captureBtn = document.getElementById('captureBtn');
+    const cameraFeed = document.getElementById('cameraFeed');
+    const imageInput = document.getElementById('capturedImage');
+    const capturedImagePreview = document.getElementById('capturedImagePreview');
+
+    captureBtn.addEventListener('click', function() {
+        const canvas = document.createElement('canvas');
+        canvas.width = 320;
+        canvas.height = 240;
+        const ctx = canvas.getContext('2d');
+
+        // Create an image element to draw from the camera feed
+        const tempImage = new Image();
+        tempImage.src = cameraFeed.src;
+        tempImage.onload = () => {
+            ctx.drawImage(tempImage, 0, 0, canvas.width, canvas.height);
+
+            // Get the base64 image data
+            const capturedImageBlob = canvas.toDataURL('image/png');
+            imageInput.value = capturedImageBlob; // Set hidden input field value
+
+            // Show preview of the captured image
+            capturedImagePreview.src = capturedImageBlob;
+            capturedImagePreview.style.display = 'block';
+        };
+    });
+
+        // Handle form submission with AJAX
+    employeeForm.addEventListener('submit', function(event) {
+        event.preventDefault();  // Prevent the default form submission
+
+        // Create FormData to send the captured image and other form data
+        const formData = new FormData(employeeForm);
+
+        // Send data using AJAX (fetch)
+        fetch('/submit', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())  // Parse the JSON response
+        .then(data => {
+            if (data.status == "success") {
+                alert(data.message);  // Show success message
+            } else {
+                alert(data.message);  // Show error message
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("An unexpected error occurred.");
+        });
+    });
+    });
+</script>
+
+</body>
+</html>
